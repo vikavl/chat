@@ -1,5 +1,5 @@
-const express = require("express");
-const http = require("http");
+const express = require("express"); //подключить express
+const http = require("http"); 
 
 const app = express();
 const server = http.Server(app);
@@ -12,13 +12,20 @@ app.get("/", (req, res) => {
 
 app.use(express.static("./client"));
 
-io.on("connection", socket => { //подключение к сокету 
-  socket.on("set username", username => { //(считка с сервера) настройка имени для даного сокета (как связь между сервером и юзером)
+io.on('connection', (socket) => { //вызывается, когда сокет подключен к серверу
+  socket.on('set username', (username) => { //берет имя текущего пользователя
     socket.username = username;
-    io.emit("new user", socket.username); //отправка на клиент
-  });
-});
+    socket.broadcast.emit('system new', socket.username); //передать сообщение или данные всем пользователям, кроме тех, которые делают запрос
+  })
+  socket.on('message', (message) => { //берет сообщение текущего пользователя
+    const data = { //создаем обьект ии туда записуем текущие данные
+      username: socket.username,
+      message
+    }
+    io.emit('render message', data) //передаем введенные данные на всех клиентов
+  })
+})
 
-server.listen(port, () => {
+server.listen(port, () => { //когда сервер работает, выводится сообщение
   console.log("listening on *:" + port);
 });
