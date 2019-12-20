@@ -1,6 +1,7 @@
 const express = require("express"); //подключить express
 const http = require("http");
 
+const users = [];
 const app = express();
 const server = http.Server(app);
 const port = process.env.PORT || 3000;
@@ -11,10 +12,14 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/client/index.html");
 });
 
-app.get('/db', (req, res) => {   
-  db.all('SELECT * FROM messages', (err, rows) => {
+app.get("/db", (req, res) => {
+  db.all("SELECT * FROM messages", (err, rows) => {
     res.send(rows);
   });
+});
+
+app.get("/users", (req, res) => {
+  res.send(users.join(","));
 });
 
 app.use(express.static("./client"));
@@ -22,6 +27,7 @@ app.use(express.static("./client"));
 io.on("connection", socket => {
   //вызывается, когда сокет подключен к серверу
   socket.on("set username", username => {
+    users.push(username);
     //берет имя текущего пользователя
     socket.username = username;
     socket.broadcast.emit("system new", socket.username); //передать сообщение или данные всем пользователям, кроме тех, которые делают запрос
@@ -37,6 +43,9 @@ io.on("connection", socket => {
       `INSERT INTO messages VALUES (NULL, '${socket.username}', '${message} \n')`
     );
     io.emit("render message", data); //передаем введенные данные на всех клиентов
+  });
+  socket.on("disconnect", () => {
+    users.splice(users.indexOf(socket.username), 1);
   });
 });
 

@@ -22,13 +22,18 @@ let isHistory = false;
 let checkAcc = false; //для проверки на просмотр истории
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("chat").onsubmit = e => {
+  document.getElementById("chat").onsubmit = async e => {
     e.preventDefault();
     const username = e.target.elements[0].value;
-    e.target.elements[0].value = "";
-    socket.emit("set username", username);
-    document.getElementById("username").innerHTML = username;
-    checkAcc = true;
+    if (!(await fetchUsers(username))) {
+      e.target.elements[0].value = "";
+      socket.emit("set username", username);
+      document.getElementById("username").innerHTML = username;
+      checkAcc = true;
+    }
+    else{
+      alert("Имя уже занято!");
+    }
   };
 
   document.getElementById("messageForm").onsubmit = e => {
@@ -57,11 +62,23 @@ document.getElementById("toHistory").onclick = async () => {
     alert("Сначала войдите!");
   }
 };
+
 document.getElementById("toChat").onclick = () => {
   if (isHistory) {
     document.getElementById("messages").innerText = messages;
     isHistory = false;
   }
+};
+
+const fetchUsers = async username => { //запрос на сервер
+  const usersFetched = await fetch("/users")
+    .then(response => {
+      if (response.ok) {
+        return response.text();
+      }
+    })
+    .then(data => data.split(","));
+  return usersFetched.some(elem => elem === username);
 };
 
 socket.on("system new", name => {
