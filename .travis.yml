@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+ - node
+script:
+ - npm test
+notifications:
+ email: false
+deploy:
+  provider: heroku
+  api_key: $key
+  app: vlasenko-viktoria-is81-cats
+  

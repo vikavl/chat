@@ -17,26 +17,63 @@
 
 const socket = io();
 
+let messages;
+let isHistory = false;
+let checkAcc = false; //для проверки на просмотр истории
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('chat').onsubmit = (e) => {
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("chat").onsubmit = e => {
     e.preventDefault();
     const username = e.target.elements[0].value;
-    e.target.elements[0].value = '';
-    socket.emit('set username', username)
-    document.getElementById('username').innerHTML = username;
-    }
-    document.getElementById('messageForm').onsubmit = (e) => {
-        e.preventDefault();
-        socket.emit('message', e.target.elements[0].value)
-        e.target.elements[0].value = '';
-    }
+    e.target.elements[0].value = "";
+    socket.emit("set username", username);
+    document.getElementById("username").innerHTML = username;
+    checkAcc = true;
+  };
+
+  document.getElementById("messageForm").onsubmit = e => {
+    e.preventDefault();
+    socket.emit("message", e.target.elements[0].value);
+    e.target.elements[0].value = "";
+  };
 });
 
-socket.on('system new', (name) => {
-    document.getElementById('messages').innerText += `${name} joined! \n`
-})
+document.getElementById("toHistory").onclick = async () => {
+  if (!isHistory && checkAcc) {
+    await fetch("/db")
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        const box = document.getElementById("messages");
+        messages = box.innerText;
+        isHistory = true;
+        box.innerText = "";
+        data.forEach(elem => {
+          box.innerText += `[${elem.username}]: ${elem.message}`;
+        });
+      });
+  } else {
+    alert("Сначала войдите!");
+  }
+};
+document.getElementById("toChat").onclick = () => {
+  if (isHistory) {
+    document.getElementById("messages").innerText = messages;
+    isHistory = false;
+  }
+};
 
-socket.on('render message', (data) => {
-    document.getElementById('messages').innerText += `[${data.username}]: ${data.message} \n`
-})
+socket.on("system new", name => {
+  document.getElementById("messages").innerText += `${name} joined! \n`;
+});
+
+socket.on("render message", data => {
+  if (checkAcc) {
+    document.getElementById(
+      "messages"
+    ).innerText += `[${data.username}]: ${data.message} \n`;
+  } else {
+    alert("Сначала войдите!");
+  }
+});

@@ -6,35 +6,42 @@
   </head>
 
   <body>
-    <main class="main">
-      <aside>
-        <pre class="username" id="username">Ваше имя</pre>
+    <div align="center">
+      <main class="main">
+        <aside>
+          <pre class="username" id="username">Ваше имя</pre>
 
-        <pre class="scrollable" id="rooms"></pre>
+          <pre class="scrollable" id="rooms">
+            <!--align="left"-->
+        <div align="left"><button type="button" id='toChat' class="newStyleButton">Чат</button></div>
+        <div align="left"><button type="button" id="toHistory" class="newStyleButton">История</button></div>
+        </pre>
 
-        <form class="form form--small" id="chat">
-          <input type="text" placeholder="введите имя" autocomplete="off" />
-          <button type="submit">Войти</button>
-        </form>
-      </aside>
+          <form class="form form--small" id="chat">
+            <input type="text" placeholder="введите имя" autocomplete="off" />
+            <button type="submit">Войти</button>
+          </form>
+        </aside>
+        <span class="line"></span>
+        <article>
+          <pre class="scrollable" id="messages"></pre>
 
-      <article>
-        <pre class="scrollable" id="messages"></pre>
+          <pre class="typing" id="typingStatus"></pre>
 
-        <pre class="typing" id="typingStatus"></pre>
+          <form class="form" id="messageForm">
+            <input
+              type="text"
+              placeholder="введите сообщение"
+              autocomplete="off"
+            />
+            <button type="submit">></button>
+          </form>
+        </article>
+      </main>
+    </div>
 
-        <form class="form" id="messageForm">
-          <input
-            type="text"
-            placeholder="your message here"
-            autocomplete="off"
-          />
-          <button type="submit">></button>
-        </form>
-      </article>
-    </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script> <!--путь к библиотеке socket.io-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <!--путь к библиотеке socket.io-->
     <script src="./main.js"></script>
   </body>
 </html>
