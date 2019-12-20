@@ -9,7 +9,7 @@
     "sqlite3": "^4.1.1"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "devDependencies": {
     "nodemon": "^1.18.11"
