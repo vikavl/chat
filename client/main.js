@@ -20,6 +20,7 @@ const socket = io();
 let messages;
 let isHistory = false;
 let checkAcc = false; //для проверки на просмотр истории
+const time = new Date();
 
 document.addEventListener("DOMContentLoaded", () => { //загрузили контент
   document.getElementById("chat").onsubmit = async e => { //Событие onsubmit возникает при отправке формы
@@ -89,7 +90,7 @@ socket.on("render message", data => { //берем с серевера инфо�
   if (checkAcc) { //если клиент вошел, то выводим сообщения
     document.getElementById(
       "messages"
-    ).innerText += `[${data.username}]: ${data.message} \n`;
+    ).innerText += `[${data.username}]: ${data.message}  ${time.toUTCString()}\n`;
   } else {
     alert("Сначала войдите!");
   }
