@@ -56,7 +56,7 @@ document.getElementById("toHistory").onclick = async () => { //вывод все
         isHistory = true; //открываем доступ к истории
         box.innerText = "";
         data.forEach(elem => {
-          box.innerText += `[${elem.username}]: ${elem.message}`;
+          box.innerText += `[${elem.username}]: ${elem.message}   ${time.toUTCString()}`;
         });
       });
   } else {
@@ -90,7 +90,7 @@ socket.on("render message", data => { //берем с серевера инфо�
   if (checkAcc) { //если клиент вошел, то выводим сообщения
     document.getElementById(
       "messages"
-    ).innerText += `[${data.username}]: ${data.message}  ${time.toUTCString()}\n`;
+    ).innerText += `[${data.username}]: ${data.message} \n`;
   } else {
     alert("Сначала войдите!");
   }
