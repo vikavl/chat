@@ -56,7 +56,7 @@ document.getElementById("toHistory").onclick = async () => { //вывод все
         isHistory = true; //открываем доступ к истории
         box.innerText = "";
         data.forEach(elem => {
-          box.innerText += `[${elem.username}]: ${elem.message}   ${time.toUTCString()}`;
+          box.innerText += `[${elem.username}]: ${elem.message}`;
         });
       });
   } else {
